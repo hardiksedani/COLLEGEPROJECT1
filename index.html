@@ -7,13 +7,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body::selection {
+            background-color: #5f2e7e; /* Tailwind yellow-400 */
+            color: white;
+        }
         .hero-section {
             background: 
                 /* linear-gradient(135deg, rgba(10, 25, 47, 0.9) 0%, rgba(0, 0, 0, 0.8) 100%), */
                 url('./IMAGES/CAR3.jpg');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
+            /* background-attachment: fixed; */
             height: 100vh;
             display: flex;
             align-items: center;
@@ -98,33 +105,41 @@
                 display: none;
             }
         }
-        .nav {
-             list-style-type: none;
-             
-    
-        }
-        .dropdown:hover  .dropdown-content {
-        display: block;
-        position: absolute;
-        background-color: #000000;
-        color: #fff;
-        min-width: 160px;
-        text-align: center;
-        }
-        .dropdown-content {
-             font-size: 15px;
-             font-style:oblique;
-             padding: 5px;
-             transition: background-color 0.3s ease-in-out ;
-             
-             /* margin: 5px; */
-        }
-        .nav .dropdown-content {
-            display: none;
-            /* transition: dropdown-content 0.3s ease-in-out ; */
-               
-        }
-        
+       .nav {
+  list-style-type: none;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-content, .dropdown-content:hover {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#view-inventory {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    color: #e3af2b; 
+    border: 2px solid #e3af2b;
+    font-weight: bold;
+    border-radius: 8px;
+}
+#view-inventory:hover {
+    background-color: #e3af2b;
+    color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
     </style>
 </head>
 <body class="font-sans bg-gray-50">
@@ -142,118 +157,73 @@
         </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <div class="text-2xl font-bold text-White-800">
-                    ROAD <span class="text-yellow-600">RISER</span>
-                </div>
-                
-                <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button id="menu-toggle" class="text-gray-800 focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                </div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-6">
-                    <nav class="nav">
-                    <li class="dropdown">
-                    <a href="#" class="text-White-800 hover:text-yellow-600 font-medium transition">Vehicles</a>
-                    <div class="dropdown-content">
-                        <a href="./IMAGES/CAR1.jpg">Renegade</a>
-                        <div class="dropdown-content">
-                        <a href="./IMAGES/CAR2.jpg">Pre LCI Compass</a>
-                        <div class="dropdown-content">
-                        <a href="./IMAGES/CAR4.jpg">Compass 4X4</a>
-                        <div class="dropdown-content">
-                        <a href="./IMAGES/CAR5.jpg">Compass 4Xe</a>
-                         <div class="dropdown-content">
-                        <a href="./IMAGES/CAR3.jpg">Renegade</a>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </li>
-                    </nav>
-                    <a href="offers.html" class="text-gray-800 hover:text-yellow-600 font-medium transition">Offers</a>
-                    <nav class="nav">
-                    <li class="dropdown">
-                   <a href="#" class="text-gray-800 hover:text-yellow-600 font-medium transition">Shopping Tools</a>
-                    <div class="dropdown-content">
-                        <a href="#">Research</a>
-                        <div class="dropdown-content">
-                        <a href="#">Finance And Offers</a>
-                        <div class="dropdown-content">
-                        <a href="#">Sign Up For Updates</a>
-                        <div class="dropdown-content">
-                        <a href="#">Find A Dealer</a>
-                        <div class="dropdown-content">
-                        <a href="#">Book Online</a>
-                        <div class="dropdown-content">
-                        <a href="#">Value My Car</a>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </li>
-                    </nav>
-                    <nav class="nav">
-                    <li class="dropdown">
-                   <a href="#" class="text-gray-800 hover:text-yellow-600 font-medium transition">Service</a>
-                    <div class="dropdown-content">
-                        <a href="#">Online Service Booking</a>
-                        <div class="dropdown-content">
-                        <a href="#">RoadSide Assistance</a>
-                        <div class="dropdown-content">
-                        <a href="#">Accessories</a>
-                        <div class="dropdown-content">
-                        <a href="#">Owner‘s Manual</a>
-                        <div class="dropdown-content">
-                        <a href="#">Warranty Information</a>
-                        <div class="dropdown-content">
-                        <a href="#">Uconnect User Manual</a>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </li>
-                    </nav>
-<nav class="nav">
-                    <li class="dropdown">
-                   <a href="#" class="text-gray-800 hover:text-yellow-600 font-medium transition">Riser Life</a>
-                    <div class="dropdown-content">
-                        <a href="#">Riser® Brand History</a>
-                        <div class="dropdown-content">
-                        <a href="#">Riser® Social Hub</a>
-                        <div class="dropdown-content">
-                        <a href="#">Riser® Merchandise</a>
-                        <div class="dropdown-content">
-                        <a href="#">Riser® Mission One Earth</a>
-                        <div class="dropdown-content">
-                        <a href="#">Riser® Capabilities</a>
-                        <div class="dropdown-content">
-                        <a href="#">Riser® Mobile App</a>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </li>
-                    </nav>
-                    <a href="dealer.html" class="text-gray-800 hover:text-yellow-600 font-medium transition">Find a Dealer</a>
-                    <a href="#" class="text-gray-800 hover:text-yellow-600 font-medium transition">Explore 360°</a>
-                    <a href="#" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 transition">Build & Price</a>
-                </div>
+<!-- Navigation -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center py-4">
+
+      <!-- Logo -->
+      <div class="text-2xl font-bold text-gray-800">
+        ROAD <span class="text-yellow-600">RISER</span>
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button id="menu-toggle" class="text-gray-800 focus:outline-none">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+
+      <!-- Desktop Menu + Login -->
+      <div class="hidden md:flex items-center space-x-6">
+        <ul id="main-menu" class="flex items-center space-x-4">
+          <!-- Vehicles -->
+          <li class="dropdown relative">
+            <button class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-600 font-medium transition">Vehicles</button>
+            <div class="dropdown-content absolute bg-black text-white mt-2 rounded shadow-md">
+              <a href="./IMAGES/CAR1.jpg" class="block px-4 py-2 hover:bg-yellow-600 transition">Renegade</a>
+              <a href="./IMAGES/CAR2.jpg" class="block px-4 py-2 hover:bg-yellow-600 transition">Pre LCI Compass</a>
+              <a href="./IMAGES/CAR4.jpg" class="block px-4 py-2 hover:bg-yellow-600 transition">Compass 4X4</a>
+              <a href="./IMAGES/CAR5.jpg" class="block px-4 py-2 hover:bg-yellow-600 transition">Compass 4Xe</a>
             </div>
+          </li>
+
+          <!-- Offers (simple link) -->
+          <li><a href="offers.html" class="px-3 py-2 text-gray-800 hover:text-yellow-600 font-medium transition">Offers</a></li>
+
+          <!-- Shopping Tools -->
+          <li class="dropdown relative">
+            <button class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-600 font-medium transition">Shopping Tools</button>
+            <div class="dropdown-content absolute bg-black text-white mt-2 rounded shadow-md">
+              <a class="block px-4 py-2 hover:bg-yellow-600 transition">Research</a>
+              <a class="block px-4 py-2 hover:bg-yellow-600 transition">Finance and Offers</a>
+              <a class="block px-4 py-2 hover:bg-yellow-600 transition">Book Online</a>
+            </div>
+          </li>
+
+          <!-- Service -->
+          <li class="dropdown relative">
+            <button class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-600 font-medium transition">Service</button>
+            <div class="dropdown-content absolute bg-black text-white mt-2 rounded shadow-md">
+              <a class="block px-4 py-2 hover:bg-yellow-600 transition">Online Service Booking</a>
+              <a class="block px-4 py-2 hover:bg-yellow-600 transition">Roadside Assistance</a>
+              <a class="block px-4 py-2 hover:bg-yellow-600 transition">Accessories</a>
+            </div>
+          </li>
+
+          <li class="dropdown relative">
+            <a href = "find.html" class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-600 font-medium transition">Find a dealer</a>
+          </li>
+
+        <!-- Login button (right side) -->
+        <a href="/login.html" class="ml-4 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition">Sign in</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+
             
             <!-- Mobile Menu -->
             <div id="mobile-menu" class="md:hidden hidden pb-4">
@@ -311,11 +281,17 @@
         </button>
     </div>
 
+    
+
     <!-- Vehicles Section -->
     <section class="py-16 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-12">ROAD RISER VEHICLES</h2>
-            
+
+            <a href="car-inventory.html" target="_blank " id="view-inventory">
+                  View Full Inventory
+            </a>
+    
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Car 1 -->
                 <div class="car-card bg-gray-50">
@@ -368,6 +344,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white pt-16 pb-8">

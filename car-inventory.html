@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Inventory - Road Riser</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+<section class="py-16 bg-white">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12">ROAD RISER VEHICLES</h2>
+    <div id="car-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Car cards will be injected here dynamically -->
+    </div>
+  </div>
+</section>
+
+<script>
+// Load cars
+// ✅ Only add default cars if localStorage is empty
+let cars = JSON.parse(localStorage.getItem('cars')) || [];
+
+if (cars.length === 0) {
+  const defaultCars = [
+    {
+      id: 1,
+      name: "Renegade",
+      brand: "Jeep",
+      model: "Renegade",
+      price: "₹45.00 LAKH",
+      description: "The perfect combination of power and adventure-ready design.",
+      year: 2023,
+      colors: [
+        { color: "Red", images: ["./IMAGES/CAR1.jpg"] },
+        { color: "Black", images: ["./IMAGES/CAR1.jpg"] }
+      ]
+    },
+    {
+      id: 2,
+      name: "Pre LCI Compass",
+      brand: "Jeep",
+      model: "Compass LCI",
+      price: "₹55.00 LAKH",
+      description: "A luxury compact SUV with all-terrain capabilities.",
+      year: 2023,
+      colors: [
+        { color: "White", images: ["./IMAGES/CAR2.jpg"] },
+        { color: "Gray", images: ["./IMAGES/CAR2.jpg"] }
+      ]
+    },
+    {
+      id: 3,
+      name: "Compass 4X4",
+      brand: "Jeep",
+      model: "Compass 4X4",
+      price: "₹60.00 LAKH",
+      description: "Rugged 4X4 design for off-road excellence.",
+      year: 2023,
+      colors: [
+        { color: "Blue", images: ["./IMAGES/CAR4.jpg"] },
+        { color: "Black", images: ["./IMAGES/CAR4.jpg"] }
+      ]
+    },
+    {
+      id: 4,
+      name: "Compass 4Xe",
+      brand: "Jeep",
+      model: "Compass 4Xe",
+      price: "₹70.00 LAKH",
+      description: "Hybrid SUV with cutting-edge electric performance.",
+      year: 2023,
+      colors: [
+        { color: "Green", images: ["./IMAGES/CAR5.jpg"] },
+        { color: "Gray", images: ["./IMAGES/CAR5.jpg"] }
+      ]
+    }
+  ];
+
+  localStorage.setItem('cars', JSON.stringify(defaultCars));
+  cars = defaultCars;
+}
+
+
+// Function to create a card
+function createCarCard(car) {
+  const card = document.createElement('div');
+  card.className = "car-card bg-white rounded-lg shadow overflow-hidden transition duration-300 hover:shadow-lg";
+  const firstImage = car.colors?.[0]?.images?.[0] || './IMAGES/no-image.jpg';
+
+  card.innerHTML = `
+    <div class="relative">
+      <img src="${firstImage}" alt="${car.name}" class="w-full h-48 object-cover">
+    </div>
+    <div class="p-4">
+      <h3 class="text-xl font-semibold mb-1">${car.name}</h3>
+      <p class="text-gray-500 mb-1">${car.brand || ''} ${car.model || ''}</p>
+      <p class="text-gray-700 font-semibold mb-2">${car.price}</p>
+      <button class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded transition">Explore</button>
+    </div>
+  `;
+
+  card.querySelector('button').addEventListener('click', () => {
+    window.location.href = `car-description.html?carId=${car.id}`;
+  });
+
+  return card;
+}
+
+// Render all cars
+const carGrid = document.getElementById('car-grid');
+if (cars.length === 0) {
+  carGrid.innerHTML = "<p class='text-center text-gray-500 col-span-full'>No cars available.</p>";
+} else {
+  cars.forEach(car => carGrid.appendChild(createCarCard(car)));
+}
+</script>
+
+
+</body>
+</html>
