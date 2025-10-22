@@ -5,14 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Car Details - Road Riser</title>
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
 <style>
+/* --- Page Theme Colors --- */
+body {
+  background: linear-gradient(135deg, #414652,#3f3f41,#32393f);
+  color: #e2e8f0;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+/* --- Main Container / Glass Panel --- */
+.main-container {
+  background: linear-gradient(90deg, #111827, #1e293b);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  transition: transform 0.3s ease;
+}
+.main-container:hover {
+  transform: translateY(-3px);
+}
+
 /* --- Carousel Styling --- */
 #carousel-container {
   position: relative;
   height: 400px;
-  background-color: #f9f9f9;
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  background: #1e293b;
 }
 .carousel-image {
   position: absolute;
@@ -21,7 +45,8 @@
   object-fit: cover;
   opacity: 0;
   transform: scale(1.05);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  border-radius: 12px;
 }
 .carousel-image.active {
   opacity: 1;
@@ -34,17 +59,20 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.2);
   border: none;
+  color: #f8fafc;
   font-size: 26px;
   border-radius: 50%;
   padding: 6px 12px;
   cursor: pointer;
   z-index: 10;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 #prev:hover, #next:hover {
-  background-color: #facc15;
+  background-color: #3b82f6;
+  transform: scale(1.1) translateY(-50%);
+  box-shadow: 0 0 10px #60a5fa;
 }
 #prev { left: 12px; }
 #next { right: 12px; }
@@ -64,60 +92,85 @@
   transform: scale(1.1);
 }
 .color-swatch.selected {
-  border-color: #000;
+  border-color: #60a5fa;
+  box-shadow: 0 0 8px #60a5fa;
 }
 
-#description {
-  word-wrap: break-word;
+/* --- Info Panels --- */
+.info-panel {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+}
+
+/* --- Book Button --- */
+#book-btn {
+  background: linear-gradient(90deg, #2563eb, #3b82f6, #60a5fa);
+  color: white;
+  font-weight: 600;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+}
+#book-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(90deg, #60a5fa, #3b82f6, #2563eb);
+  box-shadow: 0 0 20px #60a5fa;
+}
+
+/* --- Headings --- */
+#car-name {
+  text-align: center;
+  color: #ffffff;
+  font-weight: 800;
 }
 
 /* --- Responsive Layout --- */
 @media (max-width: 768px) {
-  #carousel-container { height: 300px; }
+  #carousel-container { height: 280px; }
 }
 </style>
 </head>
-<body class="bg-gray-100">
 
-<div class="max-w-6xl mx-auto p-6 bg-white rounded-lg mt-8 shadow-lg">
+<body class="flex justify-center items-center">
+
+<div class="max-w-6xl w-full main-container">
   <!-- Car Name -->
-  <h1 id="car-name" class="text-3xl font-bold mb-6 text-center text-gray-800">Car Name</h1>
+  <h1 id="car-name" class="text-4xl font-extrabold mb-8 tracking-wide">Car Name</h1>
 
-  <div class="flex flex-col lg:flex-row gap-8">
+  <div class="flex flex-col lg:flex-row gap-10">
     <!-- Left Column -->
     <div class="lg:w-2/3">
       <div id="carousel-container">
-        <!-- Dynamic images -->
         <button id="prev">❮</button>
         <button id="next">❯</button>
       </div>
-      <div class="mt-4 text-center" id="color-options">
-        <!-- Dynamic color swatches -->
-      </div>
+      <div class="mt-5 text-center" id="color-options"></div>
     </div>
 
     <!-- Right Column -->
-    <div class="lg:w-1/3 space-y-3 text-gray-700">
-      <p><strong>Brand:</strong> <span id="brand">N/A</span></p>
-      <p><strong>Model:</strong> <span id="model">N/A</span></p>
-      <p><strong>Year:</strong> <span id="year">N/A</span></p>
-      <p><strong>Price:</strong> <span id="price">N/A</span></p>
-      <p><strong>Description:</strong></p>
-      <p id="description" class="text-gray-600">No description available.</p>
-      <button id="book-btn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-md transition duration-300">
-        Book Now
-      </button>
+    <div class="lg:w-1/3 space-y-4 text-gray-200">
+      <div class="info-panel space-y-2">
+        <p><strong class="text-cyan-400">Brand:</strong> <span id="brand">N/A</span></p>
+        <p><strong class="text-cyan-400">Model:</strong> <span id="model">N/A</span></p>
+        <p><strong class="text-cyan-400">Year:</strong> <span id="year">N/A</span></p>
+        <p><strong class="text-cyan-400">Price:</strong> ₹<span id="price">N/A</span></p>
+      </div>
+      <div class="info-panel">
+        <p class="text-cyan-400 font-semibold mb-1">Description:</p>
+        <p id="description" class="text-gray-300">No description available.</p>
+      </div>
+      <button id="book-btn" class="w-full py-3 rounded-lg uppercase tracking-wider">Book Now</button>
     </div>
   </div>
 </div>
 
 <script>
-// Get car ID from URL
 const carId = new URLSearchParams(window.location.search).get('carId');
 let cars = JSON.parse(localStorage.getItem('cars')) || [];
 const car = cars.find(c => c.id == carId);
 
-// Reference elements
 const carNameEl = document.getElementById('car-name');
 const brandEl = document.getElementById('brand');
 const modelEl = document.getElementById('model');
@@ -129,9 +182,8 @@ const colorOptions = document.getElementById('color-options');
 const bookBtn = document.getElementById('book-btn');
 
 if (!car) {
-  document.body.innerHTML = "<p class='text-center mt-10 text-lg'>Car not found.</p>";
+  document.body.innerHTML = "<p class='text-center mt-10 text-lg text-white'>Car not found.</p>";
 } else {
-  // Fill in details
   carNameEl.textContent = car.name || "Unnamed Car";
   brandEl.textContent = car.brand || "N/A";
   modelEl.textContent = car.model || "N/A";
@@ -139,17 +191,13 @@ if (!car) {
   priceEl.textContent = car.price || "N/A";
   descEl.textContent = car.description || "No description available.";
 
-  // Ensure colors exist
   if (!car.colors || car.colors.length === 0) {
-    car.colors = [
-      { color: "Gray", images: car.images || ["https://via.placeholder.com/800x400?text=No+Image"] }
-    ];
+    car.colors = [{ color: "Gray", images: car.images || ["https://via.placeholder.com/800x400?text=No+Image"] }];
   }
 
   let currentColorIndex = 0;
   let currentImageIndex = 0;
 
-  // Render color swatches
   function renderColorSwatches() {
     colorOptions.innerHTML = "";
     car.colors.forEach((c, i) => {
@@ -168,7 +216,6 @@ if (!car) {
     });
   }
 
-  // Render carousel images
   function renderImages() {
     carouselContainer.querySelectorAll('img').forEach(img => img.remove());
     const images = car.colors[currentColorIndex].images || [];
@@ -181,19 +228,18 @@ if (!car) {
     });
   }
 
-  // Change images
   document.getElementById('prev').addEventListener('click', () => {
     const images = car.colors[currentColorIndex].images;
     currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
     renderImages();
   });
+
   document.getElementById('next').addEventListener('click', () => {
     const images = car.colors[currentColorIndex].images;
     currentImageIndex = (currentImageIndex + 1) % images.length;
     renderImages();
   });
 
-  // Book Now button
   bookBtn.addEventListener('click', () => {
     const query = new URLSearchParams({
       carId: car.id,
@@ -205,7 +251,6 @@ if (!car) {
     window.location.href = `booking.html?${query}`;
   });
 
-  // Initial render
   renderColorSwatches();
   renderImages();
 }
