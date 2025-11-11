@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register Page ->> My website</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: #0444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.35);
+            position: relative;
+            overflow: hidden;
+            width: 768px;
+            max-width: 100%;
+            min-height: 480px;
+        }
+
+        .container p {
+            font-size: 14px;
+            line-height: 20px;
+            letter-spacing: 0.3px;
+            margin: 20px 0;
+        }
+
+        .container span {
+            font-size: 12px;
+        }
+
+        .container a {
+            color: #333;
+            font-size: 13px;
+            text-decoration: none;
+            margin: 15px 0 10px;
+        }
+
+        .container button {
+            background-color: #2563eb;
+            color: #fff;
+            font-size: 12px;
+            padding: 10px 45px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #1106a3, #043296);
+        }
+
+        .container button.hidden {
+            background-color: transparent;
+            border-color: #fff;
+        }
+
+        .container form {
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            height: 100%;
+        }
+
+        .container input,
+        .container select {
+            background-color: #eff;
+            border: none;
+            margin: 8px 0;
+            padding: 10px 15px;
+            font-size: 13px;
+            border-radius: 8px;
+            width: 100%;
+            outline: none;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        .sign-in {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        .container.active .sign-in {
+            transform: translateX(100%);
+        }
+
+        .sign-up {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .container.active .sign-up {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: move 0.6s;
+        }
+
+        @keyframes move {
+
+            0%,
+            49.99% {
+                opacity: 0;
+                z-index: 1;
+            }
+
+            50%,
+            100% {
+                opacity: 1;
+                z-index: 5;
+            }
+        }
+
+        .social-icons {
+            margin: 20px 0;
+        }
+
+        .social-icons a {
+            border: 1px solid #ccc;
+            border-radius: 20%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 3px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .toggle-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: all 0.6s ease-in-out;
+            border-radius: 10px;
+            z-index: 1000;
+        }
+
+        .container.active .toggle-container {
+            transform: translateX(-100%);
+            border-radius: 10px;
+        }
+
+        .toggle {
+            background-color: #1B2735;
+            height: 100%;
+            color: #fff;
+            position: relative;
+            left: -100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: all 0.6s ease-in-out;
+        }
+
+        .container.active .toggle {
+            transform: translateX(50%);
+        }
+
+        .toggle-panel {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 30px;
+            text-align: center;
+            top: 0;
+            transform: translateX(0);
+            transition: all 0.6s ease-in-out;
+        }
+
+        .toggle-left {
+            transform: translateX(-200%);
+        }
+
+        .container.active .toggle-left {
+            transform: translateX(0);
+        }
+
+        .toggle-right {
+            right: 0;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="container">
+
+        <div class="form-container sign-up">
+            <form id="signup-form">
+                <h1>Create Account</h1>
+                <span>Register with E-mail</span>
+                <input type="text" id="signup-name" placeholder="Name" required pattern="[A-Za-z\s]+" title="Name should not contain numbers">
+                <input type="email" id="signup-email" placeholder="Enter E-mail" required>
+                <input type="password" id="signup-password" placeholder="Enter Password" required minlength="6" title="Password must be at least 6 characters long">
+                <select id="signup-role" required>
+                    <option value="dealer">Dealer</option>
+                    <option value="customer">Customer</option>
+                </select>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+
+        <div class="form-container sign-in">
+            <form id="login-form">
+                <h1>Sign In</h1>
+                <span>Login With Email & Password</span>
+                <input type="email" id="login-email" placeholder="Enter E-mail" required>
+                <input type="password" id="login-password" placeholder="Enter Password" required>
+                <a href="#">Forget Password?</a>
+                <button type="submit">Sign In</button>
+                <button type="button" id="continue-customer" style="margin-top:10px; background: rgb(81, 151, 198);">Continue as
+                    Customer</button>
+            </form>
+        </div>
+
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Welcome To <br>Road Riser</h1>
+                    <p>Sign in With ID & Password</p>
+                    <button class="hidden" id="login">Sign In</button>
+                </div>
+                <div class="toggle-panel toggle-right" id="welcome-panel">
+                    <h1 id="welcome-title"></h1>
+                    <p id="welcome-text"></p>
+                    <button class="hidden" id="register">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.getElementById('container');
+            const registerBtn = document.getElementById('register');
+            const loginBtn = document.getElementById('login');
+
+            const welcomeTitle = document.getElementById('welcome-title');
+            const welcomeText = document.getElementById('welcome-text');
+
+            registerBtn.addEventListener('click', () => { container.classList.add("active"); });
+            loginBtn.addEventListener('click', () => { container.classList.remove("active"); });
+
+            // ---- Sign Up ----
+            document.getElementById('signup-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('signup-name').value.trim();
+                const email = document.getElementById('signup-email').value.trim();
+                const password = document.getElementById('signup-password').value.trim();
+                const role = document.getElementById('signup-role').value;
+
+                if (!name || !email || !password) { alert("Please fill all fields"); return; }
+
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                if (users.some(u => u.email === email)) { alert("Email already registered"); return; }
+
+                users.push({ name, email, password, role });
+                localStorage.setItem('users', JSON.stringify(users));
+
+                // Save last registered user
+                localStorage.setItem('lastRegistered', JSON.stringify({ name, role }));
+
+                alert("Account created successfully!");
+                container.classList.remove("active");
+
+                showWelcomeMessage();
+            });
+
+            // ---- Personalized Welcome ----
+            function showWelcomeMessage() {
+                const last = JSON.parse(localStorage.getItem('lastRegistered'));
+                if (last) {
+                    welcomeTitle.textContent = `Hi, ${last.name}👋`;
+                    if (last.role === 'dealer') {
+                        welcomeText.textContent = "Welcome Dealer! Sign in here to manage your listings.";
+                    } else {
+                        welcomeText.textContent = "Welcome Customer! Continue to explore and buy cars.";
+                    }
+                }
+            }
+
+            // If already registered earlier, show message
+            showWelcomeMessage();
+
+            // ---- Sign In ----
+            document.getElementById('login-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value.trim();
+
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                const user = users.find(u => u.email === email && u.password === password);
+
+                if (user) {
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    if (user.role === 'dealer') {
+                        window.location.href = "dealer.html";
+                    } else {
+                        window.location.href = "car-inventory.html";
+                    }
+                } else {
+                    alert("Invalid credentials");
+                }
+            });
+
+            // ---- Continue as Customer ----
+            document.getElementById('continue-customer').addEventListener('click', () => {
+                localStorage.removeItem('currentUser');
+                window.location.href = "car-inventory.html";
+            });
+        });
+    </script>
+</body>
+
+</html>

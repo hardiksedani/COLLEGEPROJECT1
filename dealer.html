@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dealer Dashboard | Road Riser</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Smooth gradient background */
+    body {
+      background: linear-gradient(135deg, #414652,#3f3f41,#32393f);
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* Glassmorphism effect */
+    .glass {
+      background: linear-gradient(90deg, #111827, #1e293b);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(90deg, #2563eb, #00bcd4);
+      color: white;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #00bcd4, #2563eb);
+    }
+
+    .btn-danger {
+      background: linear-gradient(90deg, #ef4444, #b91c1c);
+      color: white;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-danger:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #b91c1c, #ef4444);
+    }
+
+    .btn-warning {
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      color: white;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-warning:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    }
+
+    .car-card img {
+      height: 180px;
+      width: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .navbar {
+      background: linear-gradient(90deg, #111827, #1e293b);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    footer {
+      background: #0f172a;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar text-white p-4 flex justify-between items-center shadow-lg">
+    <a href="index.html" class="text-3xl font-extrabold tracking-widest">ROAD RISER</a>
+    <div class="space-x-6 text-sm font-semibold">
+      <a href="index.html" class="hover:text-cyan-400 transition">Home</a>
+      <a href="dealer.html" class="hover:text-cyan-400 transition">Dashboard</a>
+      <a href="car-inventory.html" class="hover:text-cyan-400 transition">Inventory</a>
+      <button id="logout-btn" class="btn-warning px-3 py-1 rounded">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="max-w-7xl mx-auto p-6">
+    <h1 class="text-4xl font-bold mb-6 text-cyan-400">Dealer Dashboard</h1>
+
+    <!-- Add Car Form -->
+    <div class="glass p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-4 text-white">Add / Edit Car</h2>
+      <form id="car-form" class="space-y-4">
+        <div class="flex flex-col md:flex-row gap-4">
+          <input type="text" placeholder="Car Name" id="car-name" class="p-2 rounded bg-gray-800 text-white border border-gray-600 flex-1">
+          <input type="text" placeholder="Brand" id="car-brand" class="p-2 rounded bg-gray-800 text-white border border-gray-600 flex-1">
+          <input type="text" placeholder="Model" id="car-model" class="p-2 rounded bg-gray-800 text-white border border-gray-600 flex-1">
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-4">
+          <input type="number" placeholder="Year" id="car-year" class="p-2 rounded bg-gray-800 text-white border border-gray-600 flex-1">
+          <input type="text" placeholder="Price" id="car-price" class="p-2 rounded bg-gray-800 text-white border border-gray-600 flex-1">
+        </div>
+
+        <textarea placeholder="Description" id="car-description" class="p-2 rounded bg-gray-800 text-white border border-gray-600 w-full"></textarea>
+
+        <div id="colors-container">
+          <h3 class="font-semibold mb-2 text-white">Colors & Images</h3>
+          <button type="button" id="add-color-btn" class="btn-warning py-1 px-4 rounded">+ Add Color</button>
+        </div>
+
+        <button type="submit" class="btn-primary py-2 px-6 rounded">Save Car</button>
+      </form>
+    </div>
+
+    <!-- Dealer Cars Display -->
+    <h2 class="text-2xl font-semibold text-white mb-4">Your Cars</h2>
+    <div id="dealer-cars" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Dealer cars will appear here -->
+    </div>
+  </div>
+
+  <footer class="text-gray-400 text-center py-4 mt-8 border-t border-gray-700">
+    &copy; 2025 ROAD RISER. All Rights Reserved.
+  </footer>
+
+  <script>
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = err => reject(err);
+      });
+    }
+
+    let dealer = JSON.parse(localStorage.getItem('currentUser'));
+    if (!dealer || dealer.role !== 'dealer') {
+      alert("Please login as dealer first");
+      window.location.href = "login.html";
+    }
+
+    let dealerEmail = dealer.email;
+    let cars = JSON.parse(localStorage.getItem('cars')) || [];
+
+    if (!cars.some(c => c.dealerEmail === 'system')) {
+      const defaultCars = [
+        { id: 1, dealerEmail: 'system', name: 'Renegade', brand: 'Jeep', model: 'Renegade', year: 2025, price: '₹45.00 LAKH', description: 'Compact SUV', colors: [{ color: 'Gray', images: ['./IMAGES/CAR1.jpg'] }] },
+        { id: 2, dealerEmail: 'system', name: 'Compass', brand: 'Jeep', model: 'Compass', year: 2025, price: '₹55.00 LAKH', description: 'SUV', colors: [{ color: 'Blue', images: ['./IMAGES/CAR2.jpg'] }] },
+        { id: 3, dealerEmail: 'system', name: 'Compass 4X4', brand: 'Jeep', model: 'Compass', year: 2025, price: '₹60.00 LAKH', description: '4X4 SUV', colors: [{ color: 'Black', images: ['./IMAGES/CAR4.jpg'] }] },
+        { id: 4, dealerEmail: 'system', name: 'Compass 4Xe', brand: 'Jeep', model: 'Compass', year: 2025, price: '₹70.00 LAKH', description: 'Electric SUV', colors: [{ color: 'White', images: ['./IMAGES/CAR5.jpg'] }] }
+      ];
+      cars = [...cars, ...defaultCars];
+      localStorage.setItem('cars', JSON.stringify(cars));
+    }
+
+    const colorsContainer = document.getElementById('colors-container');
+    const form = document.getElementById('car-form');
+    const dealerCarsContainer = document.getElementById('dealer-cars');
+    let editingCarId = null;
+
+    document.getElementById('add-color-btn').addEventListener('click', () => {
+      if (colorsContainer.querySelectorAll('.color-entry').length >= 5)
+        return alert('Max 5 colors');
+      const div = document.createElement('div');
+      div.className = 'color-entry mb-2 p-2 rounded bg-gray-800 border border-gray-700';
+      div.innerHTML = `
+        <input type="text" placeholder="Color Name" class="border border-gray-600 bg-gray-900 text-white p-1 rounded color-name mb-1 w-full">
+        <input type="file" multiple accept="image/*" class="color-images mb-1 w-full text-gray-300">
+        <button type="button" class="btn-danger px-3 py-1 rounded remove-color-btn">Remove</button>
+      `;
+      colorsContainer.appendChild(div);
+      div.querySelector('.remove-color-btn').addEventListener('click', () => div.remove());
+    });
+
+    function renderDealerCars() {
+      dealerCarsContainer.innerHTML = '';
+      const dealerCars = cars.filter(c => c.dealerEmail === dealerEmail);
+      if (dealerCars.length === 0) {
+        dealerCarsContainer.innerHTML = '<p class="col-span-full text-center text-gray-400">No cars added yet.</p>';
+        return;
+      }
+      dealerCars.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'car-card glass p-3 rounded-lg shadow-md hover:scale-105 transform transition';
+        const firstImage = c.colors[0]?.images[0] || 'https://via.placeholder.com/300x200?text=No+Image';
+        card.innerHTML = `
+          <img src="${firstImage}" alt="${c.name}">
+          <h3 class="text-xl font-bold mt-2 text-cyan-300">${c.name}</h3>
+          <p class="text-gray-300">${c.brand} ${c.model}</p>
+          <p class="text-yellow-400 font-semibold">${c.price}</p>
+          <div class="flex gap-2 mt-3">
+            <button class="btn-primary px-3 py-1 rounded explore-btn">Explore</button>
+            <button class="btn-warning px-3 py-1 rounded edit-btn">Edit</button>
+            <button class="btn-danger px-3 py-1 rounded delete-btn">Delete</button>
+          </div>
+        `;
+        dealerCarsContainer.appendChild(card);
+
+        card.querySelector('.explore-btn').addEventListener('click', () => window.location.href = `car-description.html?carId=${c.id}`);
+        card.querySelector('.delete-btn').addEventListener('click', () => {
+          if (confirm('Delete this car?')) {
+            cars = cars.filter(car => car.id !== c.id);
+            localStorage.setItem('cars', JSON.stringify(cars));
+            renderDealerCars();
+          }
+        });
+        card.querySelector('.edit-btn').addEventListener('click', () => populateFormForEdit(c));
+      });
+    }
+
+    function populateFormForEdit(car) {
+      editingCarId = car.id;
+      document.getElementById('car-name').value = car.name;
+      document.getElementById('car-brand').value = car.brand;
+      document.getElementById('car-model').value = car.model;
+      document.getElementById('car-year').value = car.year;
+      document.getElementById('car-price').value = car.price;
+      document.getElementById('car-description').value = car.description;
+
+      colorsContainer.querySelectorAll('.color-entry').forEach(c => c.remove());
+      car.colors.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'color-entry mb-2 p-2 rounded bg-gray-800 border border-gray-700';
+        div.innerHTML = `
+          <input type="text" value="${c.color}" class="border border-gray-600 bg-gray-900 text-white p-1 rounded color-name mb-1 w-full">
+          <input type="file" multiple accept="image/*" class="color-images mb-1 w-full text-gray-300">
+          <button type="button" class="btn-danger px-3 py-1 rounded remove-color-btn">Remove</button>
+        `;
+        colorsContainer.appendChild(div);
+        div.querySelector('.remove-color-btn').addEventListener('click', () => div.remove());
+      });
+
+      form.querySelector('button[type=submit]').textContent = 'Update Car';
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('car-name').value.trim();
+      const brand = document.getElementById('car-brand').value.trim();
+      const model = document.getElementById('car-model').value.trim();
+      const year = document.getElementById('car-year').value.trim();
+      const price = document.getElementById('car-price').value.trim();
+      const description = document.getElementById('car-description').value.trim();
+      if (!name || !brand || !model) return alert('Please fill required fields');
+
+      const colors = [];
+      for (const entry of colorsContainer.querySelectorAll('.color-entry')) {
+        const colorName = entry.querySelector('.color-name').value.trim();
+        const files = entry.querySelector('.color-images').files;
+        const images = [];
+        for (let i = 0; i < files.length; i++) {
+          const base64 = await getBase64(files[i]);
+          images.push(base64);
+        }
+        if (colorName) colors.push({ color: colorName, images: images.length > 0 ? images : ['https://via.placeholder.com/300x200?text=No+Image'] });
+      }
+
+      if (editingCarId) {
+        const car = cars.find(c => c.id === editingCarId);
+        Object.assign(car, { name, brand, model, year, price, description, colors });
+        editingCarId = null;
+        form.querySelector('button[type=submit]').textContent = 'Save Car';
+        alert('Car updated!');
+      } else {
+        const newCar = { id: Date.now(), dealerEmail, name, brand, model, year, price, description, colors };
+        cars.push(newCar);
+        alert('Car added successfully!');
+      }
+
+      localStorage.setItem('cars', JSON.stringify(cars));
+      form.reset();
+      colorsContainer.querySelectorAll('.color-entry').forEach(c => c.remove());
+      renderDealerCars();
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('currentUser');
+      window.location.href = "login.html";
+    });
+
+    renderDealerCars();
+  </script>
+</body>
+</html>

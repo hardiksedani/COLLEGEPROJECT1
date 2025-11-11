@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Booking - Road Riser</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #414652,#3f3f41,#32393f);
+            color: #e2e8f0;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #111827, #1e293b);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 1rem 0;
+        }
+
+        header a {
+            font-weight: 600;
+            color: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        header a:hover {
+            color: #06b6d4;
+        }
+
+        /* Glass Panel */
+        #booking-panel,
+        .bg-glass {
+            background: #1e293b;
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        #booking-panel:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Car Image */
+        .car-img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(246, 246, 247, 0.5);
+            transition: transform 0.4s ease;
+        }
+
+        .car-img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Color Swatches */
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .color-swatch.selected {
+            border-color: #60a5fa;
+            box-shadow: 0 0 8px #60a5fa;
+        }
+
+        /* Inputs */
+        input,
+        textarea {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            border: 1px solid white;
+            border-radius: 8px;
+            padding: 0.5rem;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #60a5fa;
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Buttons */
+        button {
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        .confirm-btn {
+            background: linear-gradient(90deg, #2563eb, #00bcd4);
+            color: white;
+        }
+
+        .confirm-btn:hover {
+            background: linear-gradient(90deg, #00bcd4, #2563eb);
+        }
+
+        .cancel-btn {
+            background-color: rgba(148, 163, 184, 0.2);
+            color: #f1f5f9;
+        }
+
+        .cancel-btn:hover {
+            background-color: rgba(148, 163, 184, 0.35);
+        }
+
+        #confirmation {
+            background-color: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        #confirm-text {
+            color: #4ade80;
+        }
+
+        footer {
+            color: #f7f9fa;
+            background: #0f172a;
+            padding: 1rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="px-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold tracking-wide">ROAD RISER</a>
+            <nav class="space-x-6 text-sm font-semibold">
+                <a href="index.html" class="transition">Home</a>
+                <a href="car-inventory.html" class="transition">Inventory</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-6xl mx-auto p-6">
+        <div id="booking-panel" class="p-6">
+            <div class="flex flex-col lg:flex-row gap-8">
+
+                <!-- Left: Car Info -->
+                <div class="lg:w-2/3">
+                    <h1 id="car-title" class="text-3xl font-extrabold mb-4 text-cyan-400">Car</h1>
+
+                    <div id="image-wrap" class="mb-5">
+                        <img id="selected-image" src="https://via.placeholder.com/800x400?text=No+Image" alt="Car image"
+                            class="car-img">
+                    </div>
+
+                    <div id="color-area" class="mb-5">
+                        <p class="font-semibold mb-2 text-gray-200">Select Color:</p>
+                        <div id="color-swatches" class="flex items-center"></div>
+                    </div>
+
+                    <div id="specs" class="text-gray-300 space-y-1 bg-glass p-4">
+                        <p><strong class="text-cyan-400">Brand:</strong> <span id="car-brand">N/A</span></p>
+                        <p><strong class="text-cyan-400">Model:</strong> <span id="car-model">N/A</span></p>
+                        <p><strong class="text-cyan-400">Year:</strong> <span id="car-year">N/A</span></p>
+                        <p><strong class="text-cyan-400">Description:</strong> <span id="car-desc">No description.</span></p>
+                    </div>
+                </div>
+
+                <!-- Right: Booking Form -->
+                <div class="lg:w-1/3 space-y-6">
+                    <div class="bg-glass text-gray-200 p-4">
+                        <p class="text-gray-400">Price</p>
+                        <h2 id="car-price" class="text-2xl font-bold mt-1 text-cyan-300">N/A</h2>
+                    </div>
+
+                    <form id="booking-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300">Your Name</label>
+                            <input id="user-name" type="text" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300">Email</label>
+                            <input id="user-email" type="email" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300">Phone</label>
+                            <input id="user-phone" type="tel" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300">Preferred Date</label>
+                            <input id="pref-date" type="date" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300">Message / Notes</label>
+                            <textarea id="user-message" rows="3"></textarea>
+                        </div>
+
+                        <div class="border-t border-gray-600 pt-3">
+                            <p class="font-semibold mb-2 text-gray-200">Add-ons</p>
+                            <label class="flex items-center mb-2">
+                                <input id="addon-warranty" type="checkbox" class="mr-2"> Extended Warranty (₹20,000)
+                            </label>
+                            <label class="flex items-center">
+                                <input id="addon-insurance" type="checkbox" class="mr-2"> Insurance Package (₹10,000)
+                            </label>
+                        </div>
+
+                        <div class="border-t border-gray-600 pt-3">
+                            <p class="text-sm text-gray-400">Total</p>
+                            <p id="total-display" class="text-xl font-bold text-cyan-300">—</p>
+                        </div>
+
+                        <button type="submit" class="w-full py-2 confirm-btn">Confirm Booking</button>
+                        <button id="cancel-btn" type="button" class="w-full py-2 cancel-btn">Cancel</button>
+                    </form>
+
+                    <div id="confirmation" class="hidden mt-4 p-4 rounded text-center">
+                        <p id="confirm-text" class="font-medium"></p>
+                        <button id="back-to-inventory" class="mt-3 px-4 py-2 bg-white text-gray-800 rounded">Back to
+                            Inventory</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center text-sm">
+        &copy; 2025 ROAD RISER. All rights reserved.
+    </footer>
+
+    <!-- JS -->
+    <script>
+        (function () {
+            function parsePriceToNumber(priceStr) {
+                if (!priceStr) return 0;
+                let s = priceStr.replace(/[^0-9.,]/g, '').trim();
+                if (/lakh/i.test(priceStr)) return parseFloat(s.replace(/,/g, '')) * 100000;
+                if (/crore/i.test(priceStr)) return parseFloat(s.replace(/,/g, '')) * 10000000;
+                s = s.replace(/,/g, '');
+                return parseFloat(s) || 0;
+            }
+
+            function formatRupee(n) {
+                if (isNaN(n)) return '₹0';
+                return '₹' + n.toLocaleString('en-IN');
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const carId = params.get('carId');
+            const cars = JSON.parse(localStorage.getItem('cars')) || [];
+            const car = cars.find(c => String(c.id) === String(carId));
+
+            if (!car) {
+                document.getElementById('booking-panel').innerHTML = `
+      <div class="p-8 text-center">
+        <h2 class="text-xl font-semibold mb-2">Car not found</h2>
+        <p class="text-gray-300 mb-4">The car you tried to book could not be located.</p>
+        <a href="car-inventory.html" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Back to Inventory</a>
+      </div>`;
+                return;
+            }
+
+            const titleEl = document.getElementById('car-title');
+            const brandEl = document.getElementById('car-brand');
+            const modelEl = document.getElementById('car-model');
+            const yearEl = document.getElementById('car-year');
+            const descEl = document.getElementById('car-desc');
+            const priceEl = document.getElementById('car-price');
+            const imageEl = document.getElementById('selected-image');
+            const swatchesWrap = document.getElementById('color-swatches');
+            const totalDisplay = document.getElementById('total-display');
+
+            titleEl.textContent = car.name || (car.brand + ' ' + car.model);
+            brandEl.textContent = car.brand || 'N/A';
+            modelEl.textContent = car.model || 'N/A';
+            yearEl.textContent = car.year || 'N/A';
+            descEl.textContent = car.description || 'No description provided.';
+            priceEl.textContent = car.price || 'N/A';
+
+            const colors = (car.colors && car.colors.length > 0) ? car.colors : [{ color: 'Gray', images: car.images || [] }];
+            let selectedColorIndex = 0;
+
+            colors.forEach((c, idx) => {
+                const sw = document.createElement('span');
+                sw.className = 'color-swatch';
+                sw.style.backgroundColor = c.color.toLowerCase();
+                if (idx === 0) sw.classList.add('selected');
+                sw.addEventListener('click', () => {
+                    selectedColorIndex = idx;
+                    document.querySelectorAll('.color-swatch').forEach(e => e.classList.remove('selected'));
+                    sw.classList.add('selected');
+                    updateImage();
+                });
+                swatchesWrap.appendChild(sw);
+            });
+
+            function updateImage() {
+                const imgs = colors[selectedColorIndex].images || [];
+                imageEl.src = imgs[0] || 'https://via.placeholder.com/800x400?text=No+Image';
+            }
+
+            const basePrice = parsePriceToNumber(car.price);
+            const warranty = document.getElementById('addon-warranty');
+            const insurance = document.getElementById('addon-insurance');
+            function updateTotal() {
+                let total = basePrice;
+                if (warranty.checked) total += 20000;
+                if (insurance.checked) total += 10000;
+                totalDisplay.textContent = formatRupee(total);
+            }
+            warranty.addEventListener('change', updateTotal);
+            insurance.addEventListener('change', updateTotal);
+            updateImage();
+            updateTotal();
+
+            document.getElementById('cancel-btn').addEventListener('click', () => {
+                window.location.href = 'car-description.html?carId=' + encodeURIComponent(car.id);
+            });
+
+            document.getElementById('booking-form').addEventListener('submit', e => {
+                e.preventDefault();
+                document.getElementById('booking-form').classList.add('hidden');
+                const conf = document.getElementById('confirmation');
+                conf.classList.remove('hidden');
+                document.getElementById('confirm-text').textContent =
+                    `Thank you, ${document.getElementById('user-name').value}! Your booking for ${car.name} is confirmed.`;
+            });
+
+            document.getElementById('back-to-inventory').addEventListener('click', () => {
+                window.location.href = 'car-inventory.html';
+            });
+        })();
+    </script>
+</body>
+
+</html>
